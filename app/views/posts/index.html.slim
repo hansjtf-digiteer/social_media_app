@@ -1,0 +1,46 @@
+h1 Posts
+
+div style="margin-bottom: 2rem;"
+  = link_to 'Create New Post', new_post_path, class: "bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+
+- if @featured_posts.any?
+  section.featured-posts style="margin-bottom: 3rem;"
+    h2 style="font-size: 1.5rem; margin-bottom: 1rem;" Featured Posts
+    div style="display: grid; gap: 1rem;"
+      - @featured_posts.each do |post|
+        article style="padding: 1rem; border: 1px solid #ddd; border-radius: 4px;"
+          h3 style="margin-bottom: 0.5rem;"
+            = link_to post.title, post_path(post), style: "color: #2563eb; text-decoration: none;"
+          p style="color: #666;"
+            = truncate(post.content.to_s.gsub(/<[^>]*>/, ''), length: 200)
+          .meta style="color: #666; font-size: 0.875rem;"
+            div = post.publish_date.strftime("%B %d, %Y")
+            div
+              span Status: 
+              span style="color: #{post.active ? 'green' : 'red'};" = post.active ? 'Active' : 'Inactive'
+            div
+              span Featured: 
+              = post.feature ? 'Yes' : 'No'
+- else
+  p style="color: #666; margin-bottom: 2rem;" No featured posts available.
+
+section.all-posts
+  h2 style="font-size: 1.5rem; margin-bottom: 1rem;" All Posts
+  - if @posts.any?
+    div style="display: grid; gap: 1rem;"
+      - @posts.each do |post|
+        article style="padding: 1rem; border: 1px solid #ddd; border-radius: 4px;"
+          h3 style="margin-bottom: 0.5rem;"
+            = link_to post.title, post_path(post), style: "color: #2563eb; text-decoration: none;"
+          p style="color: #666;"
+            = truncate(post.content.to_s.gsub(/<[^>]*>/, ''), length: 200)
+          .meta style="color: #666; font-size: 0.875rem;"
+            div = post.publish_date.strftime("%B %d, %Y")
+            div
+              span Status: 
+              span style="color: #{post.active ? 'green' : 'red'};" = post.active ? 'Active' : 'Inactive'
+            div
+              span Featured: 
+              = post.feature ? 'Yes' : 'No'
+  - else
+    p style="color: #666;" No posts available.
