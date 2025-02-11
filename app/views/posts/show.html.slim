@@ -8,14 +8,19 @@ article.post style="max-width: 800px; margin: 2rem auto; padding: 1rem;"
         span.featured style="color: #2563eb; margin-right: 1rem;" Featured
       span.status style="color: #{@post.active ? 'green' : 'red'};"
         = @post.active ? 'Active' : 'Inactive'
+    div
+      span Author: 
+      = @post.user.email
   
   .content style="margin-bottom: 2rem;"
     = @post.content.html_safe
   
   .actions style="margin-top: 2rem;"
-    = link_to 'Edit', edit_post_path(@post), class: "bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2"
-    = button_to 'Delete', post_path(@post), 
-    method: :delete,
-    class: "bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 mr-2",
-    data: { turbo_confirm: 'Are you sure?' }
+    - if current_user == @post.user || current_user&.admin?
+      = link_to 'Edit', edit_post_path(@post), class: "bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2"
+      = button_to 'Delete', post_path(@post), 
+        method: :delete,
+        class: "bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 mr-2",
+        form: { style: "display: inline-block" },
+        data: { turbo_confirm: 'Are you sure?' }
     = link_to 'Back to Feed', root_path, class: "bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
