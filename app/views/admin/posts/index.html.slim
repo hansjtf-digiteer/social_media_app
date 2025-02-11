@@ -1,0 +1,25 @@
+h1.text-2xl.mb-4 Admin Portal - Posts
+
+table.w-full.border-collapse.border
+  thead
+    tr
+      th.p-2.border Post Title
+      th.p-2.border Author
+      th.p-2.border Created
+      th.p-2.border Featured
+      th.p-2.border Active
+      th.p-2.border Actions
+  tbody
+    - @posts.each do |post|
+      tr
+        td.p-2.border = post.title
+        td.p-2.border = post.user.email
+        td.p-2.border = post.created_at.strftime("%Y-%m-%d")
+        td.p-2.border = post.feature ? 'Yes' : 'No'
+        td.p-2.border = post.active ? 'Yes' : 'No'
+        td.p-2.border
+          = form_with model: [:admin, post], class: 'inline' do |f|
+            = f.check_box :feature, onchange: 'this.form.submit()'
+            label.mr-2 Featured
+            = f.check_box :active, onchange: 'this.form.submit()'
+            label Active

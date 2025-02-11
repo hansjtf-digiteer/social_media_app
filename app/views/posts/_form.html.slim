@@ -1,76 +1,83 @@
 = form_with(model: post) do |f|
-  - if post.errors.any?
-    div style="color: red; margin-bottom: 1rem;"
-      h2 = "#{pluralize(post.errors.count, "error")} prohibited this post from being saved:"
-      ul style="list-style: disc; padding-left: 1.5rem;"
-        - post.errors.each do |error|
-          li = error.full_message
+ - if post.errors.any?
+   div style="color: red; margin-bottom: 1rem;"
+     h2 = "#{pluralize(post.errors.count, "error")} prohibited this post from being saved:"
+     ul style="list-style: disc; padding-left: 1.5rem;"
+       - post.errors.each do |error|
+         li = error.full_message
 
-  div.field style="margin-bottom: 1rem;"
-    = f.label :title
-    = f.text_field :title, maxlength: 255, class: "w-full p-2 border rounded"
+ div.field style="margin-bottom: 1rem;"
+   = f.label :title
+   = f.text_field :title, maxlength: 255, class: "w-full p-2 border rounded"
 
-  div.field style="margin-bottom: 1rem;"
-    = f.label :content
-    #editor style="height: 300px; margin-bottom: 0.5rem;"
-      = post.content.html_safe if post.content.present?
-    = f.hidden_field :content, id: 'hidden-content'
+ div.field style="margin-bottom: 1rem;"
+   = f.label :content
+   #editor style="height: 300px; margin-bottom: 0.5rem;"
+     = post.content.html_safe if post.content.present?
+   = f.hidden_field :content, id: 'hidden-content'
 
-  div.field style="margin-bottom: 1rem;"
-    = f.label :feature, "Featured"
-    = f.check_box :feature
+ div.field style="margin-bottom: 1rem;"
+   = f.label :feature, "Featured"
+   = f.check_box :feature
 
-  div.field style="margin-bottom: 1rem;"
-    = f.label :active
-    = f.check_box :active
+ div.field style="margin-bottom: 1rem;"
+   = f.label :active
+   = f.check_box :active
 
-  div.field style="margin-bottom: 1rem;"
-    = f.label :publish_date
-    = f.text_field :publish_date, class: 'datepicker w-full p-2 border rounded'
+ div.field style="margin-bottom: 1rem;"
+   = f.label :publish_date
+   = f.text_field :publish_date, class: 'datepicker w-full p-2 border rounded'
 
-  div.actions
-    = f.submit class: "bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+ div.actions
+   = f.submit class: "bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
 
-  div style="margin-top: 1rem;"
-    = link_to 'Back to Feed', root_path, class: "text-blue-600"
+ div style="margin-top: 1rem;"
+   = link_to 'Back to Feed', root_path, class: "text-blue-600"
 
 javascript:
-  document.addEventListener('DOMContentLoaded', function() {
-    // Initialize Quill
-    var quill = new Quill('#editor', {
-      theme: 'snow',
-      modules: {
-        toolbar: [
-          ['bold', 'italic', 'underline', 'strike'],
-          ['blockquote', 'code-block'],
-          [{ 'header': 1 }, { 'header': 2 }],
-          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-          [{ 'script': 'sub'}, { 'script': 'super' }],
-          [{ 'indent': '-1'}, { 'indent': '+1' }],
-          [{ 'size': ['small', false, 'large', 'huge'] }],
-          [{ 'color': [] }, { 'background': [] }],
-          ['clean']
-        ]
-      }
-    });
+ document.addEventListener('DOMContentLoaded', function() {
+   // Initialize Quill
+   var quill = new Quill('#editor', {
+     theme: 'snow',
+     modules: {
+       toolbar: [
+         ['bold', 'italic', 'underline', 'strike'],
+         ['blockquote', 'code-block'],
+         [{ 'header': 1 }, { 'header': 2 }],
+         [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+         [{ 'script': 'sub'}, { 'script': 'super' }],
+         [{ 'indent': '-1'}, { 'indent': '+1' }],
+         [{ 'size': ['small', false, 'large', 'huge'] }],
+         [{ 'color': [] }, { 'background': [] }],
+         ['clean']
+       ]
+     }
+   });
 
-    // Set initial content if editing
-    var initialContent = document.getElementById('hidden-content').value;
-    if (initialContent) {
-      quill.root.innerHTML = initialContent;
-    }
+   // Set initial content if editing
+   var initialContent = document.getElementById('hidden-content').value;
+   if (initialContent) {
+     quill.root.innerHTML = initialContent;
+   }
 
-    // Sync Quill content with hidden field before form submission
-    document.querySelector('form').onsubmit = function() {
-      var content = document.querySelector('#hidden-content');
-      content.value = quill.root.innerHTML;
-    };
+   // Update hidden field whenever Quill content changes
+   quill.on('text-change', function() {
+     var content = document.querySelector('#hidden-content');
+     content.value = quill.root.innerHTML;
+   });
 
-    // Initialize Flatpickr
-    flatpickr(".datepicker", {
-      enableTime: true,
-      dateFormat: "Y-m-d H:i",
-      defaultDate: new Date(),
-      time_24hr: true
-    });
-  });
+   // Additional safety check before form submission
+   document.querySelector('form').onsubmit = function() {
+     var content = document.querySelector('#hidden-content');
+     content.value = quill.root.innerHTML;
+     return content.value.trim() !== '';
+   };
+
+   // Initialize Flatpickr
+   flatpickr(".datepicker", {
+     enableTime: true,
+     dateFormat: "Y-m-d H:i",
+     defaultDate: new Date(),
+     time_24hr: true
+   });
+ });
