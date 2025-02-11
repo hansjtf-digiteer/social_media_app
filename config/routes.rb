@@ -7,5 +7,9 @@ Rails.application.routes.draw do
   end
 
   root 'posts#index'
-  resources :posts
+  resources :posts do
+    collection do
+      get 'my_posts'
+    end
+  end
 end

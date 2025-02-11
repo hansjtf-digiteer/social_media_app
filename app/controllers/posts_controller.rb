@@ -1,4 +1,3 @@
-# app/controllers/posts_controller.rb
 class PostsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:index]
   before_action :set_post, only: [:show, :edit, :update, :destroy]
@@ -23,6 +22,10 @@ class PostsController < ApplicationController
   end
 
   def edit
+  end
+
+  def my_posts
+    @posts = current_user.posts.order(created_at: :desc)
   end
 
   def create

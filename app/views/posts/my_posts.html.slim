@@ -1,0 +1,30 @@
+h1.text-2xl.mb-4 My Posts
+
+div style="margin-bottom: 2rem;"
+  = link_to 'Create New Post', new_post_path, class: "bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+
+- if @posts.any?
+  div style="display: grid; gap: 1rem;"
+    - @posts.each do |post|
+      article style="padding: 1rem; border: 1px solid #ddd; border-radius: 4px;"
+        h3 style="margin-bottom: 0.5rem;"
+          = link_to post.title, post_path(post), style: "color: #2563eb; text-decoration: none;"
+        p style="color: #666;"
+          = truncate(post.content.to_s.gsub(/<[^>]*>/, ''), length: 200)
+        .meta style="color: #666; font-size: 0.875rem;"
+          div = post.publish_date.strftime("%B %d, %Y")
+          div
+            span Status: 
+            span style="color: #{post.active ? 'green' : 'red'};" = post.active ? 'Active' : 'Inactive'
+          div
+            span Featured: 
+            = post.feature ? 'Yes' : 'No'
+        .actions.mt-2
+          = link_to 'Edit', edit_post_path(post), class: "text-blue-600 mr-2"
+          = button_to 'Delete', post_path(post), 
+            method: :delete, 
+            class: "text-red-600", 
+            form: { style: "display: inline-block" },
+            data: { turbo_confirm: 'Are you sure?' }
+- else
+  p style="color: #666;" You haven't created any posts yet.
