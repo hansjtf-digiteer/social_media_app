@@ -75,3 +75,6 @@ gem "flatpickr", "~> 4.6"
 gem "friendly_id", "~> 5.5"
 
 gem 'devise'
+gem 'kaminari'
+
+gem 'kaminari-actionview'

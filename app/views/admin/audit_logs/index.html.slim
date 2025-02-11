@@ -1,0 +1,28 @@
+h1.text-2xl.mb-4 Audit Logs
+
+.pagination.mb-4
+  = paginate @audit_logs
+
+table.w-full.border-collapse.border
+  thead
+    tr
+      th.p-2.border Time
+      th.p-2.border User
+      th.p-2.border Action
+      th.p-2.border Record Type
+      th.p-2.border Record ID
+      th.p-2.border Details
+  tbody
+    - @audit_logs.each do |log|
+      tr
+        td.p-2.border = log.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        td.p-2.border = log.user.email
+        td.p-2.border = log.action.titleize
+        td.p-2.border = log.record_type
+        td.p-2.border = log.record_id
+        td.p-2.border
+          - if log.details.present?
+            pre.text-sm.whitespace-pre-wrap = JSON.pretty_generate(log.details)
+
+.pagination.mt-4
+  = paginate @audit_logs

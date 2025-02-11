@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   
   namespace :admin do
     resources :posts, only: [:index, :update]
+    resources :audit_logs, only: [:index]
     root to: 'posts#index'
   end
 
